@@ -5,11 +5,13 @@ import express, { Express, NextFunction, Response, Request } from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import requestIp from "request-ip";
+import swaggerUi from "swagger-ui-express";
 
 import router from "./router/router";
 import sequelize from "./data-source";
 import errorHandler from "./middleware/errorHandlerMiddleware";
 import * as path from "path";
+import * as SwaggerJson from "./swagger.json";
 
 const app: Express = express();
 
@@ -18,6 +20,11 @@ const port: Number = Number(process.env.PORT);
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
+app.use(
+  "/api/api-docs",
+  swaggerUi.serve,
+  swaggerUi.setup(SwaggerJson, { explorer: true })
+);
 app.use(requestIp.mw());
 app.use(express.static(path.join(__dirname, "../front")));
 app.use("/api", (req: Request, res: Response, next: NextFunction) => {
