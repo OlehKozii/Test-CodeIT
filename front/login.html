@@ -1,0 +1,37 @@
+<!Doctype HTML>
+<head>
+    <title>Login</title>
+</head>
+<body>
+<form>
+    <label for="email">Email or Login:</label><br>
+    <input type="text" id="email" name="email" placeholder="JohnDoe@email.com or JohnDoe123" required><br>
+    <label for="password">Password:</label><br>
+    <input type="password" id="password" name="password" required><br><br>
+
+    <input type="submit" value="Submit"><a href="register.html">Don't have account?</a>
+</form>
+
+<p id="errors"></p>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script type="text/javascript">
+    const element = document.querySelector('form');
+    element.addEventListener('submit', event => {
+        event.preventDefault();
+        signin();
+    });
+    async function signin(){
+        const response = await axios.post("https://test-task-codeit.herokuapp.com/api/signin",{
+                loginOrEmail:document.getElementById("email").value,
+                password:document.getElementById("password").value,
+            }
+        )
+        if(response.status===200){
+            localStorage.setItem("access_token", "Bearer "+response.data.access_token)
+            window.location.replace("https://test-task-codeit.herokuapp.com/")
+        }
+
+    }
+
+</script>
+</body>

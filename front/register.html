@@ -1,0 +1,69 @@
+<!Doctype HTML>
+<head>
+    <title>Registration</title>
+</head>
+<body>
+<form>
+    <label for="email">Email:</label><br>
+    <input type="email" id="email" name="email" placeholder="JohnDoe@email.com" required><br>
+    <label for="login">Login:</label><br>
+    <input type="text" id="login" name="login" placeholder="JohnDoe123" required><br><br>
+    <label for="password">Password:</label><br>
+    <input type="password" id="password" name="password" required><br><br>
+    <label for="realName">Real name:</label><br>
+    <input type="text" id="realName" name="realName" placeholder="John"required><br><br>
+    <label for="birth">Birth date:</label><br>
+    <input type="date" id="birth" name="birth" placeholder="08/09/2003"required><br><br>
+    <label for="birth">Birth date:</label><br>
+    <input id="country" list="countries" ><br><br>
+    <datalist id="countries">
+    </datalist>
+
+    <input type="submit" value="Submit"><a href="login.html">Have account?</a>
+</form>
+
+<p id="errors"></p>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script type="text/javascript">
+    var countries=[];
+    window.onload = useEffect;
+    async function useEffect(){
+        const result = await axios.get("https://restcountries.com/v3.1/all")
+        for(let i of result.data){
+            countries.push(i.name.common)
+        }
+        countries.sort()
+        for(let i of countries){
+            let option = document.createElement('option');
+            option.value = i;
+            document.getElementById("countries").appendChild(option);
+        }
+    }
+    const element = document.querySelector('form');
+    element.addEventListener('submit', event => {
+        event.preventDefault();
+        register();
+    });
+    async function register(){
+        if(!countries.includes(document.getElementById("country").value)){
+            console.log("Wrong country")
+            return
+        }
+        const response = await axios.post("https://test-task-codeit.herokuapp.com/api/signup",{
+                email:document.getElementById("email").value,
+                login:document.getElementById("login").value,
+                password:document.getElementById("password").value,
+                realName:document.getElementById("realName").value,
+                country:document.getElementById("country").value,
+                birth:document.getElementById("birth").value,
+            }
+        )
+        if(response.status===200){
+            localStorage.setItem("access_token", "Bearer "+response.data.access_token)
+            window.location.replace("https://test-task-codeit.herokuapp.com/")
+        }
+
+    }
+
+</script>
+</body>

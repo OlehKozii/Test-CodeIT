@@ -1,0 +1,40 @@
+<!Doctype HTML>
+<head>
+    <title>Registration</title>
+</head>
+<body>
+<a href="https://test-task-codeit.herokuapp.com/register.html">Registration</a><br>
+<a href="https://test-task-codeit.herokuapp.com/login.html">Login</a>
+<p id="warning">You need to register</p>
+<div style="display: none" id="data">
+    <p id="email"></p>
+    <p id="login"></p>
+    <button onclick="logout()">Logout</button>
+</div>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script type="text/javascript">
+    window.onload = useEffect;
+    async function useEffect(){
+        if(localStorage.getItem("access_token")){
+            try{
+                const result = await axios.get("https://test-task-codeit.herokuapp.com/api/getone",{
+                    headers:{
+                        'Authorization': localStorage.getItem("access_token")
+                    }
+                })
+                document.getElementById("email").textContent="Your email: "+result.data.email
+                document.getElementById("login").textContent="Your login: "+result.data.login
+                document.getElementById("data").style.display="block"
+                document.getElementById("warning").style.display="none"
+            }catch (e) {
+                localStorage.removeItem("access_token")
+            }
+
+        }
+    }
+    function logout(){
+        localStorage.removeItem("access_token")
+        window.location.reload()
+    }
+</script>
+</body>
